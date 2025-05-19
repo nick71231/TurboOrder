@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FilterComponent from '../components/FilterComponent.js';
 import axios from 'axios';
-// import FilterComponent from '../components/FilterComponent';
 
 const DolarGreen = styled(FaDollarSign)`
   font-size: 1.59rem;
@@ -68,12 +67,12 @@ const productTypes = [
 
 const Dashboard = () => {
   const [filter, setFilter] = useState('Tudo');
+  const [searchName, setSearchName] = useState('');
   const [orders, setOrders] = useState([]);
   const [dailyRevenue, setDailyRevenue] = useState(0);
   const [monthlyRevenue, setMonthlyRevenue] = useState(0);
   const [dailyAverage, setDailyAverage] = useState(0);
   const [monthlyAverage, setMonthlyAverage] = useState(0);
-
 
   const fetchRevenueData = async () => {
     try {
@@ -156,14 +155,14 @@ const Dashboard = () => {
     }
   };
 
-
   useEffect(() => {
-    refreshOrders()
+    refreshOrders();
   }, []);
 
   const filteredOrders = orders.filter(order => {
-    if (filter === 'Tudo') return true;
-    return order.status === filter;
+    const matchesStatus = filter === 'Tudo' || order.status === filter;
+    const matchesName = order.name.toLowerCase().includes(searchName.toLowerCase());
+    return matchesStatus && matchesName;
   });
 
   return (
@@ -209,6 +208,18 @@ const Dashboard = () => {
       <section className="orders">
         <h2>Pedidos</h2>
 
+        {/* Barra de busca por nome */}
+        <div className="search-wrapper">
+          <input
+            type="text"
+            placeholder="Buscar por nome do cliente..."
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+            className="search-input"
+          />
+        </div>
+
+        {/* Filtro de status */}
         <FilterComponent
           filterState={filter}
           setFilter={setFilter}

@@ -50,11 +50,9 @@ const AddOrder = () => {
   const [phoneInput, setPhoneInput] = useState("");
   const [loadingClient, setLoadingClient] = useState(false);
   const [clientError, setClientError] = useState(null);
-  const [phoneOptions, setPhoneOptions] = useState([]);
   const [observacao, setObservacao] = useState("");
   const [pagamento, setPagamento] = useState("");
   const [selectedTime, setSelectedTime] = useState(null);
-  // const horarioFormatado = selectedTime?.format("HH:mm") || null;
 
   const [selectedProducts, setSelectedProducts] = useState({
     Arroz: null,
@@ -106,15 +104,6 @@ const AddOrder = () => {
     setClientError(null);
   };
 
-  const fetchPhoneSuggestions = async (partialPhone) => {
-    try {
-      const response = await axios.get(`http://localhost:8800/clientes/telefone-sugestoes/${partialPhone}`);
-      setPhoneOptions(response.data);
-    } catch (error) {
-      setPhoneOptions([]);
-    }
-  };
-
   const fetchClientInfo = async (phone) => {
     if (!phone || phone.length < 8) {
       setClientInfo({
@@ -141,13 +130,6 @@ const AddOrder = () => {
       setPhoneInput(phone || "");
     } finally {
       setLoadingClient(false);
-    }
-  };
-
-  const handlePhoneSelect = (event, value) => {
-    if (value && value !== phoneInput) {
-      setPhoneInput(value);
-      fetchClientInfo(value);
     }
   };
 
