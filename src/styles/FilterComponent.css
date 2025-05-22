@@ -20,6 +20,21 @@ button.hamburger:hover{
   gap: 10px;
 }
 
+.filter-badge {
+  color: black;
+
+  border-radius: 100%;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 30px;
+}
+
+
 /* Modo responsivo: mostra o botão e esconde os botões */
 @media (max-width: 959px) {
   .hamburger {
