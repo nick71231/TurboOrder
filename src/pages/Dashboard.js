@@ -218,7 +218,7 @@ const Dashboard = () => {
           filterState={filter}
           setFilter={setFilter}
           filterItens={productTypes}
-          orders={orders} // 🔥 Adicionado para os contadores
+          orders={orders}
         />
         <div className="order-cards">
           {filteredOrders.map(order => (
