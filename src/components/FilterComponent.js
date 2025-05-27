@@ -5,11 +5,11 @@ import { FaBars } from "react-icons/fa";
 const FilterComponent = ({ filterState, setFilter, filterItens, orders }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const allTypes = ['Tudo', ...filterItens.map((type) => type.value)];
+  const allTypes = ['Todos', ...filterItens.map((type) => type.value)];
 
   // Função para contar pedidos por status
   const getCount = (type) => {
-    if (type === 'Tudo') return orders.length;
+    if (type === 'Todos') return orders.length;
     return orders.filter(order => order.status === type).length;
   };
 
