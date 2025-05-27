@@ -27,7 +27,9 @@ const FilterComponent = ({ filterState, setFilter, filterItens, orders }) => {
             className={`filter-btn ${filterState === type ? "active" : ""}`}
             onClick={() => setFilter(type)}
           >
-            {type}
+            <span className='filter-btn-text'>
+              {type}
+            </span>
             <span className="filter-badge">{getCount(type)}</span>
           </button>
         ))}

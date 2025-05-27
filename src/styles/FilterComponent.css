@@ -1,3 +1,25 @@
+:root {
+--fg-white: #ffffff;
+  --bg-white-alt: #f5f5f5;
+  /* --bg-grey: #f0f0f0; */
+  --bg-yellow: #FFBD0D;
+  --bg-yellow-alt: #e59400;
+  --fg-black: #000000;
+  --bg-grey: #e6e6e6;
+  --fg-red: #f44336;
+  --bg-red: #f44336;
+  --bg-red-alt: #ab180e;
+  --btn-border-radius: 20px;
+  --btn-border-size: 1px;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --bg-white: #ffffff;
+  --bg-yellow: #FFBD0D;
+  --bg-yellow-alt: #e59400;
+  --fg-black: #000000;
+  --fg-red: #f44336;
+  --bg-red: #f44336;
+  --bg-red-alt: #ab180e;
+}
 /* Estiliza o botão hambúrguer */
 .hamburger {
   background: #FFBD0D;
@@ -20,11 +42,29 @@ button.hamburger:hover{
   gap: 10px;
 }
 
+.filter-buttons .filter-btn {
+  padding: 0;
+}
+
+.filter-btn-text{
+  /* padding: 15px 0px 15px 5px; */
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
 .filter-badge {
   color: black;
-
-  border-radius: 100%;
-  padding: 2px 8px;
+  /* background: #f6f6f655; */
+  background: #00000010;
+  /* border-left: 2px solid #f6f6f655; */
+  border-radius: 0 50% 50% 0;
+  /* padding: 2px 8px; */
+  /* padding: 0px 0px 0 5px; */
+  padding-left: 5px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   font-size: 0.75rem;
   margin-left: 6px;
   display: inline-flex;
@@ -57,6 +97,10 @@ button.hamburger:hover{
   /* Exibir quando o menu estiver aberto */
   .filter-buttons.open {
     display: flex;
+  }
+  .filter-buttons .filter-btn {
+    /* TODO: add border-radius var */
+    border-radius: 10px;
   }
 }
 
