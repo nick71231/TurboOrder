@@ -24,6 +24,15 @@ const DolarRed = styled(FaDollarSign)`
   padding: 10px;
 `;
 
+// TODO: Modificar isso para ser css puro
+const DolarBlue = styled(FaDollarSign)`
+  font-size: 1.59rem;
+  background-color: darkblue;
+  color: #ffffff;
+  border-radius: 50%;
+  padding: 10px;
+`;
+
 const Statistic = styled.p`
   color: #000000;
   font-size: 1rem;
@@ -48,14 +57,39 @@ const AmountRed = styled.p`
   margin: 0px;
 `;
 
+const AmountBlue = styled.p`
+  color: #007BFF;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0px;
+  margin: 0px;
+`;
+
 const TransferGreen = styled(FaMoneyBillTransfer)`
   font-size: 2.19rem;
   color: #1DAD6F;
 `;
 
+const TransferBlue = styled(FaMoneyBillTransfer)`
+  font-size: 2.19rem;
+  color: #007BFF;
+`;
+
 const TransferRed = styled(FaMoneyBillTransfer)`
   font-size: 2.19rem;
   color: #FD1F4A;
+`;
+
+const CardBlue = styled.div`
+  background-color: #007BFF;
+  border-radius: 8px;
+  padding: 16px;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const productTypes = [
@@ -72,18 +106,31 @@ const Dashboard = () => {
   const [monthlyRevenue, setMonthlyRevenue] = useState(0);
   const [dailyAverage, setDailyAverage] = useState(0);
   const [monthlyAverage, setMonthlyAverage] = useState(0);
+  const [weekAverage, setWeekAverage] = useState(0);
+  const [weekRevenue, setWeekRevenue] = useState(0);
 
   const fetchRevenueData = async () => {
     try {
-      const response = await axios.get("http://localhost:8800/pedidos/soma-mensal");
-      const { totalUltimos30Dias, mediaUltimos30Dias, totalMesAtual, mediaMesAtual } = response.data;
+      const response = await axios.get("http://localhost:8800/status/soma-mensal");
+      const { totalMesAtual, mediaMesAtual } = response.data;
+      console.log("totalMes", totalMesAtual)
+      console.log("mediaMesAtual", mediaMesAtual)
       setMonthlyRevenue(totalMesAtual);
       setMonthlyAverage(mediaMesAtual);
     } catch (error) {
       console.error("Erro ao buscar dados de faturamento:", error);
       toast.error("Erro ao buscar faturamento mensal.");
     }
-  };
+    try {
+      const response = await axios.get("http://localhost:8800/status/soma-semanal");
+      const { totalSemanaAtual, mediaSemanaAtual } = response.data;
+      setWeekRevenue(totalSemanaAtual);
+      setWeekAverage(mediaSemanaAtual);
+    } catch (error) {
+      console.error("Erro ao buscar dados de faturamento:", error);
+      toast.error("Erro ao buscar faturamento mensal.");
+    }
+  }
 
   const refreshOrders = async () => {
     try {
@@ -175,6 +222,7 @@ const Dashboard = () => {
   return (
     <main className="dashboard">
       <div className="revenue-section">
+
         <div className="header-card card-green">
           <div className="revenue-header revenue-green">
             <DolarGreen />
@@ -189,6 +237,24 @@ const Dashboard = () => {
             <div className="transfer-details">
               <Statistic>Média Estatística</Statistic>
               <AmountGreen>R$ {dailyAverage.toFixed(2)}</AmountGreen>
+            </div>
+          </div>
+        </div>
+
+        <div className="header-card card-blue">
+          <div className="revenue-header revenue-blue">
+            <DolarBlue />
+            <div className="revenue-info">
+              <h3>Faturamento desta Semana</h3>
+              <p>R$ {weekRevenue.toFixed(2)}</p>
+            </div>
+          </div>
+          <div className="revenue-transfer">
+            <div className="vertical-divider"></div>
+            <TransferBlue />
+            <div className="transfer-details">
+              <Statistic>Média Estatística da Semana</Statistic>
+              <AmountBlue>R$ {weekAverage.toFixed(2)}</AmountBlue>
             </div>
           </div>
         </div>
@@ -210,6 +276,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
       </div>
 
       <section className="orders">
@@ -225,7 +292,7 @@ const Dashboard = () => {
           ))}
         </div>
       </section>
-    </main>
+    </main >
   );
 };
 
