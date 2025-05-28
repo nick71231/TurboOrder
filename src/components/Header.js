@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import React from "react";
+import { FaBell, FaSearch } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import "../styles/Header.css";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -16,16 +16,10 @@ const Header = () => {
     <header className="header">
       <div className="header-content">
         <div className="search-bar">
-          <FaSearch className="search-icon" onClick={() => handleSearch(searchText)} />
+          <FaSearch className="search-icon" />
           <input
             type="text"
-            placeholder="Buscar por nome do cliente..."
-            value={searchText}
-            onChange={(e) => {
-              const newValue = e.target.value;
-              setSearchText(newValue);
-              handleSearch(newValue);
-            }}
+            placeholder="Pesquisar..."
             className="search-input"
             onChange={handleSearchChange}
           />
