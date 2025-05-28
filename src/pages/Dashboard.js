@@ -204,6 +204,7 @@ const Dashboard = () => {
     return () => window.removeEventListener("search", handleSearch);
   }, []);
 
+  // FIXME: Arrumar comportamento da barra de pesquisa
   useEffect(() => {
     setOrders((prevOrders) =>
       prevOrders.map((order) => {
