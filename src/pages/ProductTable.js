@@ -30,7 +30,7 @@ const ProductTable = () => {
   const [products, setProducts] = useState([]);
   const [proNome, setProNome] = useState("");
   const [proTipo, setProTipo] = useState("");
-  const [filter, setFilter] = useState("Tudo");
+  const [filter, setFilter] = useState("Todos");
   const [onEdit, setOnEdit] = useState(null);
 
   const productTypes = [
@@ -103,7 +103,7 @@ const ProductTable = () => {
     setProTipo(product.pro_tipo);
   };
 
-  const filteredProducts = filter === "Tudo"
+  const filteredProducts = filter === "Todos"
     ? products
     : products.filter((product) => product.pro_tipo === filter);
 
