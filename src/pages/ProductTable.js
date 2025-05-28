@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { FaBars } from "react-icons/fa";
 import axios from "axios";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -31,7 +30,7 @@ const ProductTable = () => {
   const [products, setProducts] = useState([]);
   const [proNome, setProNome] = useState("");
   const [proTipo, setProTipo] = useState("");
-  const [filter, setFilter] = useState("Tudo");
+  const [filter, setFilter] = useState("Todos");
   const [onEdit, setOnEdit] = useState(null);
   const productTypes = [
     { value: "Arroz", label: "Arroz" },
@@ -113,7 +112,7 @@ const ProductTable = () => {
     setIsEditModalOpen(true);
   };
 
-  const filteredProducts = filter === "Tudo"
+  const filteredProducts = filter === "Todos"
     ? products
     : products.filter((product) => product.pro_tipo === filter);
 

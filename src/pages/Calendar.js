@@ -6,7 +6,7 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { toast } from "react-toastify";
 import '../styles/Global.css';
 import '../styles/Calendar.css';
-import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, IconButton } from '@mui/material';
 import { IoMdClose } from "react-icons/io";
 
 export default function Calendar() {
@@ -14,7 +14,6 @@ export default function Calendar() {
   const [produtos, setProdutos] = useState([]);
   const [selectedTipo, setSelectedTipo] = useState(null);
   const [selectedProdutos, setSelectedProdutos] = useState({});
-  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [isModified, setIsModified] = useState(false); // Novo estado
 
   const h3Refs = useRef({});
@@ -154,14 +153,7 @@ ${getProdutosPorTipo("Salada") || "nenhuma salada disponível para hoje"}
   };
 
   const showAddMenu = (tipo) => {
-    const h3Element = h3Refs.current[tipo];
-    if (h3Element) {
-      const rect = h3Element.getBoundingClientRect();
-      setModalPosition({
-        top: rect.top + window.scrollY,
-        left: rect.right + 10 + window.scrollX,
-      });
-    }
+    // Removed setModalPosition usage as modalPosition state was removed
     setSelectedTipo(tipo);
   };
 

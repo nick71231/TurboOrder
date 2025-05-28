@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -6,10 +6,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
 import SelectTime from './SelectTime.js';
 import Address from '../components/Address.js'
-import ClientInfo from './ClientInfo.js';
 import "../styles/DeliverySelect.css";
 
 export default function DeliverySelect({ formData, setFormData, selectedTime, setSelectedTime }) {

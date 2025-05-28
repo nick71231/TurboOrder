@@ -99,7 +99,7 @@ const productTypes = [
 ];
 
 const Dashboard = () => {
-  const [filter, setFilter] = useState('Tudo');
+  const [filter, setFilter] = useState('Todos');
   const [orders, setOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [dailyRevenue, setDailyRevenue] = useState(0);
@@ -207,7 +207,7 @@ const Dashboard = () => {
   useEffect(() => {
     setOrders((prevOrders) =>
       prevOrders.map((order) => {
-        const matchesFilter = filter === 'Tudo' || order.status === filter;
+        const matchesFilter = filter === 'Todos' || order.status === filter;
         const matchesSearch = order.name.toLowerCase().includes(searchTerm);
         return {
           ...order,
@@ -285,6 +285,7 @@ const Dashboard = () => {
           filterState={filter}
           setFilter={setFilter}
           filterItens={productTypes}
+          orders={orders}
         />
         <div className="order-cards">
           {filteredOrders.map(order => (

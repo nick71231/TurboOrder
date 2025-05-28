@@ -5,14 +5,11 @@ import "../styles/Header.css";
 import { NavLink, useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const [searchText, setSearchText] = useState("");
   const navigate = useNavigate();
 
-  const handleSearch = (text) => {
-    navigate("/", { state: { searchTerm: text } });
-
-    const searchEvent = new CustomEvent("search", { detail: text });
-    window.dispatchEvent(searchEvent);
+  const handleSearchChange = (e) => {
+    const searchValue = e.target.value;
+    navigate(`/?search=${encodeURIComponent(searchValue)}`);
   };
 
   return (
@@ -30,11 +27,12 @@ const Header = () => {
               handleSearch(newValue);
             }}
             className="search-input"
+            onChange={handleSearchChange}
           />
         </div>
 
         <div className="user-actions">
-          <NavLink to="/cadastro-de-cliente" className="add-order-btn">
+          <NavLink to="/cadastro-de-cliente" className={"add-order-btn"}>
             <span className="btn-pedido">Pedido</span>
             <FaPlus className="btn-plus" />
           </NavLink>

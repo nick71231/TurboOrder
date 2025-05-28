@@ -60,12 +60,8 @@ const ProgressBar = () => {
     { path: "/finalizar", label: "Finalizar" },
   ];
 
-  const [subStepIndex, setSubStepIndex] = useState(0);
-
   useEffect(() => {
-    if (location.pathname === "/cadastro-de-cliente") {
-      setSubStepIndex(1);
-    }
+    // No longer using subStepIndex, so no effect needed here
   }, [location.pathname]);
 
   const currentStepIndex = (() => {
