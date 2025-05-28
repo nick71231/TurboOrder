@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import '../styles/FilterComponent.css';
 import { FaBars } from "react-icons/fa";
 
-const FilterComponent = ({ filterState, setFilter, filterItens, orders }) => {
+const FilterComponent = ({ filterState, setFilter, filterItens, orders = [] }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const allTypes = ['Todos', ...filterItens.map((type) => type.value)];
 
-  // Função para contar pedidos por status
   const getCount = (type) => {
     if (type === 'Todos') return orders.length;
     return orders.filter(order => order.status === type).length;
@@ -30,7 +29,10 @@ const FilterComponent = ({ filterState, setFilter, filterItens, orders }) => {
             <span className='filter-btn-text'>
               {type}
             </span>
-            <span className="filter-badge">{getCount(type)}</span>
+            {/* FIXME: Modificar esse componente para que ele se adapte corretamente a variação de estilo */}
+            {getCount(type) > 0 && (
+              <span className="filter-badge">{getCount(type)}</span>
+            )}
           </button>
         ))}
       </div>
@@ -39,3 +41,4 @@ const FilterComponent = ({ filterState, setFilter, filterItens, orders }) => {
 };
 
 export default FilterComponent;
+;
