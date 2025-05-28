@@ -56,6 +56,7 @@ const AlreadyRegistered = styled.button`
 const AddOrder = () => {
   const location = useLocation();
 
+  const [phoneOptions, setPhoneOptions] = useState([]);
   const [options, setOptions] = useState([]);
   const [clientInfo, setClientInfo] = useState({
     cli_nome: "",
