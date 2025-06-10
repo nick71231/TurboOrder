@@ -132,6 +132,28 @@ const Dashboard = () => {
     }
   }
 
+  // 🔥 Função para aplicar filtros
+const applyFilters = (ordersToFilter) => {
+  return ordersToFilter.map((order) => {
+    const matchesFilter = filter === 'Todos' || order.status === filter;
+    const matchesSearch = order.name.toLowerCase().includes(searchTerm);
+    return {
+      ...order,
+      visible: matchesFilter && matchesSearch,
+    };
+  });
+};
+
+// 🔥 Atualiza status localmente
+const handleStatusChange = (id, newStatus) => {
+  setOrders((prevOrders) => {
+    const updatedOrders = prevOrders.map((order) => 
+      order.id === id ? { ...order, status: newStatus } : order
+    );
+    return applyFilters(updatedOrders);
+  });
+};
+
   const refreshOrders = async () => {
     try {
       const [ordersResponse, productsResponse] = await Promise.all([
@@ -205,18 +227,10 @@ const Dashboard = () => {
   }, []);
 
   // FIXME: Arrumar comportamento da barra de pesquisa
-  useEffect(() => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) => {
-        const matchesFilter = filter === 'Todos' || order.status === filter;
-        const matchesSearch = order.name.toLowerCase().includes(searchTerm);
-        return {
-          ...order,
-          visible: matchesFilter && matchesSearch,
-        };
-      })
-    );
-  }, [filter, searchTerm]);
+useEffect(() => {
+  setOrders((prevOrders) => applyFilters(prevOrders));
+}, [filter, searchTerm]);
+
 
   const filteredOrders = orders.filter(order => order.visible !== false);
 
@@ -290,7 +304,7 @@ const Dashboard = () => {
         />
         <div className="order-cards">
           {filteredOrders.map(order => (
-            <OrderCard key={order.id} {...order} onStatusChange={refreshOrders} />
+            <OrderCard key={order.id} {...order} onStatusChange={handleStatusChange} />
           ))}
         </div>
       </section>

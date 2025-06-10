@@ -16,30 +16,30 @@ const Historico = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      setLoading(true);
-      try {
-        const params = new URLSearchParams();
-        if (customerName) params.append("customerName", customerName);
-        if (orderDate) params.append("orderDate", orderDate);
-        if (orderStatus) params.append("status", orderStatus);
-        if (valor) params.append("valor", valor);
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (customerName) params.append("customerName", customerName);
+      if (orderDate) params.append("orderDate", orderDate);
+      if (orderStatus) params.append("status", orderStatus);
+      if (valor) params.append("valor", valor);
 
-        const response = await fetch(`http://localhost:8800/pedidos/filtred?${params.toString()}`);
-        if (!response.ok) {
-          throw new Error("Erro ao buscar pedidos");
-        }
-        const data = await response.json();
-        setOrders(data);
-      } catch (error) {
-        console.error(error);
-        setOrders([]);
-      } finally {
-        setLoading(false);
+      const response = await fetch(`http://localhost:8800/pedidos/filtred?${params.toString()}`);
+      if (!response.ok) {
+        throw new Error("Erro ao buscar pedidos");
       }
-    };
+      const data = await response.json();
+      setOrders(data);
+    } catch (error) {
+      console.error(error);
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchOrders();
   }, [customerName, orderDate, orderStatus, valor]);
 
@@ -47,7 +47,7 @@ const Historico = () => {
     <div className="historico-container">
       <h2 className="title">Histórico de Pedidos</h2>
       <div className="filters">
-        <Box className="filters" display="flex" flexWrap="wrap" gap={2} mb={3}>
+        <Box display="flex" flexWrap="wrap" gap={2} mb={3}>
           <TextField
             label="Nome do Cliente"
             variant="outlined"
@@ -59,9 +59,6 @@ const Historico = () => {
                 "&:hover fieldset": { borderColor: "#FD1F4A" },
                 "&.Mui-focused fieldset": { borderColor: "#FD1F4A" },
               },
-              "& .MuiInputBase-input": {
-                color: "black",
-              },
               width: "25ch",
             }}
           />
@@ -69,7 +66,7 @@ const Historico = () => {
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
             <DatePicker
               label="Data do Pedido"
-              value={dayjs(orderDate)} // orderDate como string ou dayjs object
+              value={orderDate ? dayjs(orderDate) : null}
               onChange={(newValue) => setOrderDate(newValue?.format("YYYY-MM-DD"))}
               slotProps={{
                 textField: {
@@ -78,9 +75,6 @@ const Historico = () => {
                     "& .MuiOutlinedInput-root": {
                       "&:hover fieldset": { borderColor: "#FD1F4A" },
                       "&.Mui-focused fieldset": { borderColor: "#FD1F4A" },
-                    },
-                    "& .MuiInputBase-input": {
-                      color: "black",
                     },
                     width: "20ch",
                   },
@@ -99,9 +93,6 @@ const Historico = () => {
               "& .MuiOutlinedInput-root": {
                 "&:hover fieldset": { borderColor: "#FD1F4A" },
                 "&.Mui-focused fieldset": { borderColor: "#FD1F4A" },
-              },
-              "& .MuiInputBase-input": {
-                color: "black",
               },
               width: "22ch",
             }}
@@ -123,9 +114,6 @@ const Historico = () => {
                 "&:hover fieldset": { borderColor: "#FD1F4A" },
                 "&.Mui-focused fieldset": { borderColor: "#FD1F4A" },
               },
-              "& .MuiInputBase-input": {
-                color: "black",
-              },
               width: "15ch",
             }}
           />
@@ -143,7 +131,11 @@ const Historico = () => {
               name={`${order.cli_nome} ${order.cli_sobrenome}`}
               details={`Funcionário: ${order.fun_nome} - Tipo Pagamento: ${order.ped_tipoPagamento}`}
               status={order.ped_status}
-              data={new Date().toISOString().split('T')[0]}
+              data={order.ped_data}
+              day_order={order.ped_day_order}
+              products={order.ped_observacao}
+              valor={order.ped_valor}
+              refreshOrders={fetchOrders} // 🔥 Refresh após editar ou mudar status
             />
           ))}
         </div>

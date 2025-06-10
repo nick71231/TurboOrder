@@ -126,10 +126,23 @@
     background-color: #e4aa0a;
 }
 
+.filter-btn-texte {
+padding: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
 .filter-buttons {
     display: flex;
     align-items: center;
     margin-top: 10px;
+}
+
+.filter-buttonsw {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .filter-buttons .filter-label {
@@ -150,6 +163,7 @@
     color: #333;
     transition: background 0.3s ease;
 }
+
 
 .filter-buttons .filter-btn.active {
     background-color: #FFBD0D;
@@ -300,6 +314,7 @@
         padding: 10px;
     }
 }
+
 
 /* @media (min-width) {
     .product-table button.edit-btn svg {

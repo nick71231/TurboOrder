@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash, FaBars } from "react-icons/fa";
 import axios from "axios";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -8,8 +8,7 @@ import styled from "styled-components";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./../styles/ProductTable.css";
-import FilterComponent from "../components/FilterComponent";
-import EditProductModal from "./EditProductModal"; // Importando o modal
+import EditProductModal from "./EditProductModal";
 
 const FormContainer = styled.div`
   display: flex;
@@ -25,13 +24,20 @@ const Button = styled.button`
   margin-left: auto;
 `;
 
-
 const ProductTable = () => {
   const [products, setProducts] = useState([]);
   const [proNome, setProNome] = useState("");
   const [proTipo, setProTipo] = useState("");
   const [filter, setFilter] = useState("Todos");
   const [onEdit, setOnEdit] = useState(null);
+
+  const [editProNome, setEditProNome] = useState("");
+  const [editProTipo, setEditProTipo] = useState("");
+  const [onProductEdit, setProductEdit] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const [menuOpen, setMenuOpen] = useState(false); // Estado do menu hamburguer
+
   const productTypes = [
     { value: "Arroz", label: "Arroz" },
     { value: "Feijão", label: "Feijão" },
@@ -40,12 +46,6 @@ const ProductTable = () => {
     { value: "Acompanhamento", label: "Acompanhamento" },
     { value: "Salada", label: "Salada" },
   ];
-
-  const [editProNome, setEditProNome] = useState('');
-  const [editProTipo, setEditProTipo] = useState('');
-  const [onProductEdit, setProductEdit] = useState(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
 
   useEffect(() => {
     axios
@@ -62,15 +62,16 @@ const ProductTable = () => {
 
     if (onEdit) {
       axios
-        .put(`http://localhost:8800/produtos/${onEdit.pro_id}`, { pro_nome: proNome, pro_tipo: proTipo })
+        .put(`http://localhost:8800/produtos/${onEdit.pro_id}`, {
+          pro_nome: proNome,
+          pro_tipo: proTipo,
+        })
         .then(() => {
-          console.log('Produto atualizado com sucesso!');
           const updatedProducts = products.map((product) =>
             product.pro_id === onEdit.pro_id
               ? { ...product, pro_nome: proNome, pro_tipo: proTipo }
               : product
           );
-
           setProducts(updatedProducts);
           setProNome("");
           setProTipo("");
@@ -81,7 +82,10 @@ const ProductTable = () => {
         .catch(() => toast.error("Erro ao atualizar o produto."));
     } else {
       axios
-        .post("http://localhost:8800/produtos", { pro_nome: proNome, pro_tipo: proTipo })
+        .post("http://localhost:8800/produtos", {
+          pro_nome: proNome,
+          pro_tipo: proTipo,
+        })
         .then((response) => {
           setProducts([...products, response.data]);
           setProNome("");
@@ -92,13 +96,13 @@ const ProductTable = () => {
     }
   };
 
-
-
   const handleDelete = async (pro_id) => {
     await axios
       .delete(`http://localhost:8800/produtos/${pro_id}`)
       .then(({ data }) => {
-        const newArray = products.filter((product) => product.pro_id !== pro_id);
+        const newArray = products.filter(
+          (product) => product.pro_id !== pro_id
+        );
         setProducts(newArray);
         toast.success(data);
       })
@@ -112,61 +116,84 @@ const ProductTable = () => {
     setIsEditModalOpen(true);
   };
 
-  const filteredProducts = filter === "Todos"
-    ? products
-    : products.filter((product) => product.pro_tipo === filter);
-
+  const filteredProducts =
+    filter === "Todos"
+      ? products
+      : products.filter((product) => product.pro_tipo === filter);
 
   return (
     <div className="product-table">
       <h1 className="title">Cadastro de Produtos</h1>
 
-      <div className="filter-section">
-        <Box component="form" noValidate autoComplete="off" sx={{ marginBottom: 2 }}>
-          <FormContainer>
-            <TextField
-              label="Nome do Produto"
-              value={proNome}
-              onChange={(e) => setProNome(e.target.value)}
-              sx={{
-                marginRight: 2,
-                "& .MuiOutlinedInput-root": {
-                  "&:hover fieldset": { borderColor: "#FD1F4A" },
-                  "&.Mui-focused fieldset": { borderColor: "#FD1F4A" },
-                },
-              }}
-            />
-            <TextField
-              select
-              label="Tipo do Produto"
-              value={proTipo}
-              onChange={(e) => setProTipo(e.target.value)}
-              helperText="Por favor selecione um tipo"
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  "&:hover fieldset": { borderColor: "#FD1F4A" },
-                  "&.Mui-focused fieldset": { borderColor: "#FD1F4A" },
-                },
-              }}
-            >
-              {productTypes.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-            <Button className="btn-salvar" type="button" onClick={handleSave}>
-              Salvar
-            </Button>
-          </FormContainer>
-        </Box>
+      <Box
+        component="form"
+        noValidate
+        autoComplete="off"
+        sx={{ marginBottom: 2 }}
+      >
+        <FormContainer>
+          <TextField
+            label="Nome do Produto"
+            value={proNome}
+            onChange={(e) => setProNome(e.target.value)}
+            sx={{
+              marginRight: 2,
+              "& .MuiOutlinedInput-root": {
+                "&:hover fieldset": { borderColor: "#FD1F4A" },
+                "&.Mui-focused fieldset": { borderColor: "#FD1F4A" },
+              },
+            }}
+          />
+          <TextField
+            select
+            label="Tipo do Produto"
+            value={proTipo}
+            onChange={(e) => setProTipo(e.target.value)}
+            helperText="Por favor selecione um tipo"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "&:hover fieldset": { borderColor: "#FD1F4A" },
+                "&.Mui-focused fieldset": { borderColor: "#FD1F4A" },
+              },
+            }}
+          >
+            {productTypes.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <Button className="btn-salvar" type="button" onClick={handleSave}>
+            Salvar
+          </Button>
+        </FormContainer>
+      </Box>
 
-        <FilterComponent
-          filterState={filter}
-          setFilter={setFilter}
-          filterItens={productTypes}
-          menuOpen={false}
-        />
+      {/* Seção de filtro com botão hambúrguer */}
+      <div className="filter-control">
+        <button
+          className="hamburger"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          <FaBars size={24} />
+        </button>
+
+        <div className={`filter-buttons ${menuOpen ? "open" : ""}`}>
+          <span className="filter-label">Filtro</span>
+          {["Todos", ...productTypes.map((item) => item.value)].map(
+            (category, index) => (
+              <button
+                key={index}
+                className={`filter-btn ${
+                  filter === category ? "active" : ""
+                }`}
+                onClick={() => setFilter(category)}
+              >
+                <span className="filter-btn-text filter-btn-texte">{category}</span>
+              </button>
+            )
+          )}
+        </div>
       </div>
 
       <table>
@@ -187,10 +214,18 @@ const ProductTable = () => {
               <td>
                 <div className="control-box">
                   <button className="edit-btn">
-                    <FaEdit onClick={() => handleEdit(product)} size={16} className='icon-size' />
+                    <FaEdit
+                      onClick={() => handleEdit(product)}
+                      size={16}
+                      className="icon-size"
+                    />
                   </button>
                   <button className="delete-btn">
-                    <FaTrash onClick={() => handleDelete(product.pro_id)} size={16} className='icon-size' />
+                    <FaTrash
+                      onClick={() => handleDelete(product.pro_id)}
+                      size={16}
+                      className="icon-size"
+                    />
                   </button>
                 </div>
               </td>
@@ -198,7 +233,6 @@ const ProductTable = () => {
           ))}
         </tbody>
       </table>
-
 
       <EditProductModal
         open={isEditModalOpen}
@@ -210,8 +244,7 @@ const ProductTable = () => {
         setProducts={setProducts}
         productTypes={productTypes}
       />
-
-    </div >
+    </div>
   );
 };
 

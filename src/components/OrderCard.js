@@ -9,7 +9,7 @@ import { useLocation } from 'react-router';
 const statusOptions = ['Em Andamento', 'Concluído', 'Cancelado'];
 
 const OrderCard = ({
-  id, name, details, status, data, day_order, products, valor, onStatusChange
+  id, name, details, status, data, day_order, products, valor, refreshOrders, onStatusChange
 }) => {
   const location = useLocation();
   const [currentStatus, setCurrentStatus] = useState(status || 'Desconhecido');
@@ -28,7 +28,9 @@ const OrderCard = ({
       });
       setCurrentStatus(nextStatus);
       toast.success(`Status atualizado para: ${nextStatus}`);
-      if (onStatusChange) onStatusChange();
+
+      if (refreshOrders) refreshOrders(); // ✅ Correção aqui
+      if (onStatusChange) onStatusChange(id, nextStatus);
     } catch (error) {
       console.error(`Erro ao atualizar o pedido ${id}:`, error);
       toast.error('Erro ao atualizar o status do pedido.');
@@ -47,7 +49,6 @@ const OrderCard = ({
           </div>
           <div className='order-date-day'>
             <span className="order-date">{data}</span>
-
             {location.pathname !== '/historico' && (
               <div className='order-day-order'><span>{day_order}</span></div>
             )}
@@ -66,9 +67,12 @@ const OrderCard = ({
 
       <EditOrderDialog
         open={editOpen}
-        onClose={() => setEditOpen(false)}
+        onClose={() => {
+          setEditOpen(false);
+          if (refreshOrders) refreshOrders(); // continua aqui também
+        }}
         id={id}
-        onStatusChange={onStatusChange}
+        refreshOrders={refreshOrders}
       />
     </div>
   );

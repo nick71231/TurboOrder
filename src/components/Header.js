@@ -1,5 +1,5 @@
 import React from "react";
-import { FaBell, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import "../styles/Header.css";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -9,7 +9,15 @@ const Header = () => {
 
   const handleSearchChange = (e) => {
     const searchValue = e.target.value;
-    navigate(`/?search=${encodeURIComponent(searchValue)}`);
+    
+    // Dispara o evento de busca
+    const event = new CustomEvent("search", { detail: searchValue });
+    window.dispatchEvent(event);
+
+    // Redireciona para a Home se não estiver nela
+    if (window.location.pathname !== "/") {
+      navigate("/");
+    }
   };
 
   return (
