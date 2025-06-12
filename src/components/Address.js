@@ -1,8 +1,45 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, TextField } from "@mui/material";
+import axios from "axios";
 import "../styles/Address.css";
 
-const Address = ({ formData, handleChange }) => {
+const Address = ({ formData, handleChange, setFormData }) => {
+  const { cli_cep } = formData;
+
+  useEffect(() => {
+    const fetchAddress = async () => {
+      const cep = cli_cep.replace(/\D/g, "");
+
+      if (cep.length === 8) {
+        try {
+          const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+          if (!response.data.erro) {
+            setFormData((prevData) => ({
+              ...prevData,
+              cli_rua: response.data.logradouro || "",
+              cli_bairro: response.data.bairro || "",
+              cli_cidade: response.data.localidade || "",
+            }));
+          }
+        } catch (error) {
+          console.error("Erro ao buscar CEP:", error);
+        }
+      }
+    };
+
+    fetchAddress();
+  }, [cli_cep, setFormData]);
+
+  const handleCepChange = (e) => {
+    const cep = e.target.value.replace(/\D/g, "").slice(0, 8);
+    const formattedCep = cep.length > 5 ? `${cep.slice(0, 5)}-${cep.slice(5)}` : cep;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      cli_cep: formattedCep,
+    }));
+  };
+
   return (
     <Box sx={{ "& .MuiOutlinedInput-root": { width: "100%" } }}>
       <div className="addressForm">
@@ -11,7 +48,7 @@ const Address = ({ formData, handleChange }) => {
           variant="outlined"
           name="cli_cep"
           value={formData.cli_cep || ""}
-          onChange={handleChange}
+          onChange={handleCepChange}
           sx={{
             "& .MuiOutlinedInput-root": {
               "&:hover fieldset": { borderColor: "#FD1F4A" },

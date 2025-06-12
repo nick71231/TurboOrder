@@ -31,13 +31,35 @@ const AddClient = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    let newValue = value;
+    if (name === "cli_cep") {
+      newValue = value.replace(/[^\d-]/g, "").slice(0, 9);
+    }
+
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: newValue
     }));
   };
 
-  const handleSubmit = (e) => {
+  const validateCep = (cep) => {
+    const cleanedCep = cep.replace(/\D/g, "");
+    return /^\d{8}$/.test(cleanedCep);
+  };
+
+  const checkCepExists = async (cep) => {
+    try {
+      const cleanCep = cep.replace(/\D/g, "");
+      const response = await axios.get(`https://viacep.com.br/ws/${cleanCep}/json/`);
+      return !response.data.erro;
+    } catch (error) {
+      console.error("Erro ao consultar o CEP:", error);
+      return false;
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (
@@ -51,6 +73,17 @@ const AddClient = () => {
       !formData.cli_rua.trim()
     ) {
       toast.warn("Preencha todos os campos obrigatórios, exceto complemento.");
+      return;
+    }
+
+    if (!validateCep(formData.cli_cep)) {
+      toast.error("CEP inválido. Use apenas 8 dígitos numéricos.");
+      return;
+    }
+
+    const cepValido = await checkCepExists(formData.cli_cep);
+    if (!cepValido) {
+      toast.error("CEP não encontrado. Verifique se digitou corretamente.");
       return;
     }
 
@@ -110,18 +143,15 @@ const AddClient = () => {
         setShowModal(false);
         navigate("/cadastro-de-cliente/pedidos");
       } else {
-        console.warn("Resposta inesperada:", response);
         toast.error("Erro inesperado ao cadastrar o cliente.");
       }
     } catch (error) {
       console.error("Erro ao cadastrar cliente:", error);
-
       const mensagemErro =
         error?.response?.data?.message ||
         error?.response?.data ||
         error?.message ||
         "Erro ao cadastrar o cliente.";
-
       toast.error(mensagemErro);
     }
   };
@@ -148,7 +178,11 @@ const AddClient = () => {
             <ClientInfo formData={formData} handleChange={handleChange} />
             <hr />
             <h2 className="sub-text">Endereço</h2>
-            <Address formData={formData} handleChange={handleChange} />
+            <Address
+              formData={formData}
+              handleChange={handleChange}
+              setFormData={setFormData} // ✅ Adicionado para preenchimento via CEP
+            />
             <div className="addClient-btn-add">
               <button type="submit" className="btn-add">
                 Cadastrar
